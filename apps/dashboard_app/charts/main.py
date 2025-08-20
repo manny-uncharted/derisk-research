@@ -208,17 +208,25 @@ class Dashboard:
 
         st.header(ChartsHeaders.low_health_factor_loans)
 
+        def on_change():            
+            st.session_state.loan_slider= st.session_state.loan_slider_value
+
         col1, _ = st.columns([1, 3])
         with col1:
+            if 'loan_slider' not in st.session_state:
+                 st.session_state.loan_slider  = (
+                    0,
+                    int(loans_data[CommonValues.debt_usd.value].max()) or 1,
+                )
             # TODO: remove this line when debugging is done
             debt_usd_lower_bound, debt_usd_upper_bound = st.slider(
                 label="Select range of USD borrowings",
+                on_change = on_change,
                 min_value=0,
+                key="loan_slider_value",
                 max_value=int(loans_data[CommonValues.debt_usd.value].max()),
-                value=(
-                    0,
-                    int(loans_data[CommonValues.debt_usd.value].max()) or 1,
-                ),  # FIXME remove 1
+                value=st.session_state.loan_slider, 
+                
             )
 
         st.dataframe(
