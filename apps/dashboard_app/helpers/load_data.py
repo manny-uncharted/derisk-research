@@ -70,7 +70,7 @@ class DashboardDataHandler:
         await self._fetch_and_process_zklend_data(zklend_state)
         await self._set_zklend_interest_rates(zklend_state)
         return zklend_state
-    
+
     async def _init_nostra_alpha_state(self) -> NostraAlphaState:
         """
         Initialize NostrAlpha state.
@@ -83,9 +83,9 @@ class DashboardDataHandler:
         await self._fetch_and_process_Nostra_alpha_data(nostra_state)
         await self._set_nostra_alpha_interest_rates(nostra_state)
         return nostra_state
-    
+
     async def _fetch_and_process_Nostra_alpha_data(self, nostra_state):
-        PROTOCOL_Nostra =  ProtocolIDs.NOSTRA_ALPHA.value
+        PROTOCOL_Nostra = ProtocolIDs.NOSTRA_ALPHA.value
         BATCH_SIZE = 1000
         start = monotonic()
 
@@ -131,8 +131,6 @@ class DashboardDataHandler:
         nostra_state.last_block_number = last_block
         logger.info("Initialized data state in %.2fs", monotonic() - start)
 
-
-
     async def _set_nostra_alpha_interest_rates(self, nostra_state):
         nostra_interest_rate_data = await self.data_connector.fetch_data(
             self.data_connector.NOSTRA_ALPHA_INTEREST_RATE_SQL_QUERY
@@ -151,10 +149,6 @@ class DashboardDataHandler:
             ].iloc[0]
         else:
             nostra_state.interest_rate_models.debt = None
-
-
-    
-
 
     async def _fetch_and_process_zklend_data(self, zklend_state):
         PROTOCOL_ZKLEND = "zkLend"

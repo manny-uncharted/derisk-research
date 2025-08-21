@@ -65,7 +65,7 @@ class NostraAlphaState(State):
         self,
         loan_entity_class: NostraAlphaLoanEntity = NostraAlphaLoanEntity,
         verbose_user: Optional[str] = None,
-        can_collect_token_parameters = True
+        can_collect_token_parameters=True,
     ) -> None:
         super().__init__(
             loan_entity_class=loan_entity_class,
