@@ -3,6 +3,7 @@ This module defines the Dashboard class for rendering a DeRisk dashboard using S
 """
 
 import time
+from shared.protocol_ids import ProtocolIDs
 import numpy as np
 import pandas as pd
 import plotly
@@ -57,8 +58,8 @@ class Dashboard:
     }
     PROTOCOL_NAMES = [
         "zkLend",
-        "Nostra Alpha",
-        "Nostra Mainnet",
+        ProtocolIDs.NOSTRA_ALPHA.value,
+        ProtocolIDs.NOSTRA_MAINNET.value
         # "Vesu"
     ]
 
@@ -105,7 +106,7 @@ class Dashboard:
             self.protocols = st.multiselect(
                 label="Select protocols",
                 options=self.PROTOCOL_NAMES,
-                default=[self.PROTOCOL_NAMES[0]],
+                default=[*self.PROTOCOL_NAMES],
             )
             self.collateral_token = st.selectbox(
                 label="Select collateral token:",
