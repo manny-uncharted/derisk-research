@@ -12,7 +12,7 @@ from shared.constants import CRONTAB_TIME
 
 logger = logging.getLogger(__name__)
 ONE_MINUTE_IN_MILISECONDS = 60000
-REFRESH_TIME = ONE_MINUTE_IN_MILISECONDS * int(CRONTAB_TIME)
+REFRESH_TIME = ONE_MINUTE_IN_MILISECONDS * int(CRONTAB_TIME) * 10
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
