@@ -419,10 +419,8 @@ def get_data(state: State) -> tuple[dict[str, pd.DataFrame], pd.DataFrame]:
     t_swap = time.time()
     swap_amm = SwapAmm()
     swap_amm.__init__()
-    pool_cache = json.loads(
-        redis_client.get("pool_balances")
-    )
-   
+    pool_cache = json.loads(redis_client.get("pool_balances"))
+
     asyncio.run(swap_amm.get_balance_from_cache(pool_cache))
     logging.info(f"swap in {time.time() - t_swap}s")
     for pair in PAIRS:
@@ -461,7 +459,7 @@ def get_protocol_data_mappings(
 
     protocol_main_chart_data: dict[str, pd.DataFrame] = {}
     protocol_loans_data: dict[str, dict] = {}
-    main_chart_data, loans_data = get_data(state=state)  
+    main_chart_data, loans_data = get_data(state=state)
     for protocol_name in protocols:
         protocol_loans_data[protocol_name] = loans_data
         if current_pair == stable_coin_pair:

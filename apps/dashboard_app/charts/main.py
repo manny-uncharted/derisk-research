@@ -2,7 +2,6 @@
 This module defines the Dashboard class for rendering a DeRisk dashboard using Streamlit.
 """
 
-import time
 from shared.protocol_ids import ProtocolIDs
 import numpy as np
 import pandas as pd
@@ -42,9 +41,6 @@ from dashboard_app.charts.utils import (
     transform_main_chart_data,
 )
 
-import logging
-logger = logging.getLogger(__name__)
-
 
 class Dashboard:
     """
@@ -59,7 +55,7 @@ class Dashboard:
     PROTOCOL_NAMES = [
         "zkLend",
         ProtocolIDs.NOSTRA_ALPHA.value,
-        ProtocolIDs.NOSTRA_MAINNET.value
+        ProtocolIDs.NOSTRA_MAINNET.value,
         # "Vesu"
     ]
 
@@ -133,31 +129,20 @@ class Dashboard:
         """
         Generates a chart that visualizes liquidable debt against available supply.
         """
-        t = time.time()
-        logger.info(f"#TIME load_main_chart #A {time.time() - t}")
-        t = time.time()
         (
             protocol_main_chart_data_mapping,
             protocol_loans_data_mapping,
         ) = self._get_protocol_data_mappings()
-        logger.info(f"#TIME load_main_chart #B {time.time() - t}")
-        t = time.time()
         loans_data = (  # TODO: remove unused `loans_data` variable or use it
             transform_loans_data(protocol_loans_data_mapping, self.PROTOCOL_NAMES)
         )
-        logger.info(f"#TIME load_main_chart #C {time.time() - t}")
-        t = time.time()
         main_chart_data = transform_main_chart_data(
             protocol_main_chart_data_mapping, self.current_pair, self.PROTOCOL_NAMES
         )
-        logger.info(f"#TIME load_main_chart #D {time.time() - t}")
-        t = time.time()
 
         # Plot the liquidable debt against the available supply.
         collateral_token, debt_token = self.current_pair.split("-")
         collateral_token_price = 0
-        logger.info(f"#TIME load_main_chart #E {time.time() - t}")
-        t = time.time()
 
         if self.current_pair == self.stable_coin_pair:
             for stable_coin in DEBT_TOKENS[:-1]:
@@ -170,8 +155,6 @@ class Dashboard:
                 main_chart_data, collateral_token, debt_token
             )
 
-        logger.info(f"#TIME load_main_chart #F {time.time() - t}")
-        t = time.time()
         figure = get_main_chart_figure(
             data=main_chart_data,
             collateral_token=collateral_token,
@@ -182,11 +165,8 @@ class Dashboard:
             ),
             collateral_token_price=collateral_token_price,
         )
-        logger.info(f"#TIME load_main_chart #G {time.time() - t}")
-        t = time.time()
+
         st.plotly_chart(figure_or_data=figure, use_container_width=True)
-        logger.info(f"#TIME load_main_chart #H {time.time() - t}")
-        t = time.time()
 
     def load_loans_with_low_health_factor_chart(self):
         """
@@ -209,25 +189,24 @@ class Dashboard:
 
         st.header(ChartsHeaders.low_health_factor_loans)
 
-        def on_change():            
-            st.session_state.loan_slider= st.session_state.loan_slider_value
+        def on_change():
+            st.session_state.loan_slider = st.session_state.loan_slider_value
 
         col1, _ = st.columns([1, 3])
         with col1:
-            if 'loan_slider' not in st.session_state:
-                 st.session_state.loan_slider  = (
+            if "loan_slider" not in st.session_state:
+                st.session_state.loan_slider = (
                     0,
                     int(loans_data[CommonValues.debt_usd.value].max()) or 1,
                 )
             # TODO: remove this line when debugging is done
             debt_usd_lower_bound, debt_usd_upper_bound = st.slider(
                 label="Select range of USD borrowings",
-                on_change = on_change,
+                on_change=on_change,
                 min_value=0,
                 key="loan_slider_value",
                 max_value=int(loans_data[CommonValues.debt_usd.value].max()),
-                value=st.session_state.loan_slider, 
-                
+                value=st.session_state.loan_slider,
             )
 
         st.dataframe(
@@ -466,7 +445,7 @@ class Dashboard:
         # TODO
         if not wallet_id:
             return None
-        
+
         user_data = get_user_history(wallet_id)
         if user_data is None or user_data.empty:
             st.error("No data found for this user.")
@@ -485,12 +464,7 @@ class Dashboard:
         """
         Display a leaderboard of the top 5 biggest collateral and debt per token.
         """
-        pd.set_option('display.max_columns', None)
-        logger.info(f"#LEAD H {self.collateral_stats.head(5)}")
-        logger.info(f"#LEAD I {self.collateral_stats.info()}")
-        logger.info(f"#LEAD X {self.debt_stats.head(5)}")
-        logger.info(f"#LEAD Y {self.debt_stats.info()}")
-        
+        pd.set_option("display.max_columns", None)
         st.header("Leaderboard: Top 5 Collateral & Debt per Token")
 
         if self.collateral_stats.empty or self.debt_stats.empty:
@@ -564,36 +538,13 @@ class Dashboard:
         This function executes/runs all chart loading methods.
         """
         # Load sidebar with protocol settings
-        t = time.time()
         self.load_sidebar()
-        logger.info(f"#TIME load_sidebar {time.time() - t}")
-        t = time.time()
-
         self.load_main_chart()
-        logger.info(f"#TIME load_main_chart {time.time() - t}")
-        t = time.time()
-
         self.load_loans_with_low_health_factor_chart()
-        logger.info(f"#TIME load_loans_with_low_health_factor_chart {time.time() - t}")
-        t = time.time()
-
         self.load_top_loans_chart()
-        logger.info(f"#TIME load_top_loans_chart {time.time() - t}")
-        t = time.time()
-
         self.load_detail_loan_chart()
-        logger.info(f"#TIME load_detail_loan_chart {time.time() - t}")
-        t = time.time()
-
         self.load_comparison_lending_protocols_chart()
-        logger.info(f"#TIME load_comparison_lending_protocols_chart {time.time() - t}")
-        t = time.time()
 
         # TODO temp. Use real wallet
         # self.get_user_history("0x04d0390b777b424e43839cd1e744799f3de6c176c7e32c1812a41dbd9c19db6a")
-        logger.info(f"#TIME get_user_history {time.time() - t}")
-        t = time.time()
-
         self.load_leaderboard()
-        logger.info(f"#TIME load_leaderboard {time.time() - t}")
-        t = time.time()

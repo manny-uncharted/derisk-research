@@ -71,8 +71,8 @@ class MockState(State):
     "state, expected",
     [
         (MockState("zkLend"), "zkLend"),
-        (MockState(ProtocolIDs.NOSTRA_ALPHA.value),ProtocolIDs.NOSTRA_ALPHA.value),
-        (MockState(ProtocolIDs.NOSTRA_MAINNET.value),  ProtocolIDs.NOSTRA_MAINNET.value),
+        (MockState(ProtocolIDs.NOSTRA_ALPHA.value), ProtocolIDs.NOSTRA_ALPHA.value),
+        (MockState(ProtocolIDs.NOSTRA_MAINNET.value), ProtocolIDs.NOSTRA_MAINNET.value),
     ],
 )
 def test_get_protocol(state, expected):

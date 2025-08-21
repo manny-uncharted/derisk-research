@@ -109,6 +109,6 @@ def get_supply_function_call_parameters(
     """
     if protocol == "zkLend":
         return token_addresses, "felt_total_supply"
-    if protocol in { ProtocolIDs.NOSTRA_ALPHA.value,  ProtocolIDs.NOSTRA_MAINNET.value}:
+    if protocol in {ProtocolIDs.NOSTRA_ALPHA.value, ProtocolIDs.NOSTRA_MAINNET.value}:
         return token_addresses, "totalSupply"
     raise ValueError
